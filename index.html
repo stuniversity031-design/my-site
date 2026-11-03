@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The System That Replaced My Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #17160F;
+    --paper: #F4EEE1;
+    --paper-raised: #EAE2CF;
+    --brass: #AD7A2C;
+    --brass-dark: #7C581F;
+    --bronze-text: #322C1E;
+    --muted: #7C7560;
+    --rule: #C9BC9C;
+    --good: #4B5A3C;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ink: #EDE6D6;
+      --paper: #15140F;
+      --paper-raised: #1E1C14;
+      --brass: #D6A24C;
+      --brass-dark: #E6B868;
+      --bronze-text: #EDE6D6;
+      --muted: #9C9480;
+      --rule: #3A3627;
+      --good: #8CA072;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ink: #EDE6D6;
+    --paper: #15140F;
+    --paper-raised: #1E1C14;
+    --brass: #D6A24C;
+    --brass-dark: #E6B868;
+    --bronze-text: #EDE6D6;
+    --muted: #9C9480;
+    --rule: #3A3627;
+    --good: #8CA072;
+  }
+
+  * { box-sizing: border-box; }
+  html {
+    scroll-padding-top: env(safe-area-inset-top, 0px);
+  }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--bronze-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---- header / memo stamp ---- */
+  header {
+    padding: 56px 0 28px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .stamp {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12.5px;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  h1 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(34px, 5.4vw, 54px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    color: var(--ink);
+  }
+  .sub {
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--muted);
+    max-width: 58ch;
+    margin: 0;
+  }
+
+  /* ---- sections ---- */
+  section { padding: 44px 0; border-bottom: 1px solid var(--rule); }
+  section:last-of-type { border-bottom: none; }
+
+  p { font-size: 17px; line-height: 1.65; margin: 0 0 16px; }
+  p.lead { font-size: 19px; line-height: 1.6; color: var(--ink); }
+  strong { color: var(--ink); font-weight: 600; }
+
+  .kicker {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--brass-dark);
+    margin: 0 0 8px;
+  }
+  h2 {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(24px, 3.4vw, 30px);
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 0 0 18px;
+  }
+
+  /* ---- role ledger ---- */
+  .ledger { border-top: 1px solid var(--rule); margin-top: 8px; }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+    align-items: baseline;
+  }
+  .row .role { font-weight: 600; color: var(--ink); font-size: 15.5px; }
+  .row .role span { display: block; font-weight: 400; color: var(--muted); font-size: 14px; margin-top: 2px; }
+  .row .cost { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; font-size: 17px; color: var(--brass-dark); white-space: nowrap; }
+  .row .cost small { display: block; font-family: 'Inter', sans-serif; font-weight: 400; font-size: 11.5px; color: var(--muted); text-align: right; }
+
+  /* ---- stat trio ---- */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 8px; }
+  .stat { border-top: 2px solid var(--brass); padding-top: 12px; }
+  .stat .num { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: clamp(26px, 4vw, 34px); color: var(--ink); line-height: 1; }
+  .stat .lbl { font-size: 13.5px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+  @media (max-width: 560px) {
+    .stats { grid-template-columns: 1fr; gap: 18px; }
+  }
+
+  ul.plain { margin: 0 0 16px; padding: 0; list-style: none; }
+  ul.plain li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    font-size: 16.5px;
+    line-height: 1.55;
+  }
+  ul.plain li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--brass);
+  }
+
+  /* ---- signup ---- */
+  .signup {
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 36px 28px;
+    margin: 8px 0;
+  }
+  .signup h2 { margin-bottom: 8px; }
+  .signup p.note { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+
+  form { display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
+  label { font-size: 13px; color: var(--muted); font-weight: 500; }
+  input[type="email"], input[type="text"] {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    padding: 13px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+  }
+  input[type="email"]:focus, input[type="text"]:focus {
+    border-color: var(--brass);
+    box-shadow: 0 0 0 3px rgba(173, 122, 44, 0.18);
+  }
+  button.cta {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 14px 22px;
+    background: var(--brass);
+    color: #1B1304;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  button.cta:hover { background: var(--brass-dark); }
+  button.cta:active { transform: translateY(1px); }
+  button.cta:focus-visible { outline: 3px solid var(--brass-dark); outline-offset: 2px; }
+  button.cta:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .fineprint { font-size: 12.5px; color: var(--muted); margin-top: 14px; }
+
+  .status {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 3px;
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+  .status.show { display: block; }
+  .status.ok { background: rgba(75, 90, 60, 0.12); color: var(--good); border: 1px solid rgba(75, 90, 60, 0.3); }
+  .status.err { background: rgba(176, 60, 40, 0.1); color: #B03C28; border: 1px solid rgba(176, 60, 40, 0.3); }
+
+  /* ---- custom build upsell ---- */
+  .upsell {
+    background: var(--paper-raised);
+    border: 1px solid var(--brass);
+    border-radius: 2px;
+    padding: 36px 28px;
+    margin: 8px 0;
+  }
+  .upsell .hook {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-style: italic;
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--ink);
+    margin: 0 0 10px;
+    line-height: 1.4;
+  }
+  .upsell p.note { color: var(--muted); font-size: 15px; margin-bottom: 22px; line-height: 1.6; }
+  .upsell p.note strong { color: var(--brass-dark); }
+
+  textarea {
+    font-family: 'Inter', sans-serif;
+    font-size: 15.5px;
+    padding: 13px 14px;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    resize: vertical;
+    min-height: 92px;
+    line-height: 1.5;
+  }
+  textarea:focus {
+    border-color: var(--brass);
+    box-shadow: 0 0 0 3px rgba(173, 122, 44, 0.18);
+  }
+
+  .addrow-wrap { display: flex; flex-direction: column; gap: 10px; }
+  .addrow-item { display: flex; gap: 8px; align-items: flex-start; }
+  .addrow-item textarea { flex-grow: 1; }
+  .addrow-item button.removeRow {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 8px 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .addrow-item button.removeRow:hover { color: #B03C28; border-color: #B03C28; }
+
+  button.addAnother {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--brass-dark);
+    background: transparent;
+    border: 1px dashed var(--brass);
+    border-radius: 3px;
+    padding: 10px 14px;
+    cursor: pointer;
+    text-align: left;
+    width: fit-content;
+    margin-top: 4px;
+  }
+  button.addAnother:hover { background: rgba(173, 122, 44, 0.08); }
+
+  .checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 6px;
+  }
+  .checkbox-row input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--brass);
+    flex-shrink: 0;
+  }
+  .checkbox-row label {
+    font-size: 14px;
+    color: var(--bronze-text);
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  .direct-contact {
+    margin-top: 22px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .direct-contact a {
+    color: var(--brass-dark);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid var(--brass);
+  }
+  .direct-contact a:hover { color: var(--ink); border-color: var(--ink); }
+  .direct-contact .arrow { color: var(--brass); font-weight: 600; }
+
+  footer {
+    padding: 36px 0 60px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* ---- mock activity toast ---- */
+  .activity-toast {
+    position: fixed;
+    left: 20px;
+    bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+    max-width: 320px;
+    background: var(--paper);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--brass);
+    border-radius: 3px;
+    padding: 14px 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    z-index: 40;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+  .activity-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .activity-toast .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--good);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .activity-toast .body { font-size: 13.5px; line-height: 1.45; color: var(--bronze-text); }
+  .activity-toast .body strong { color: var(--ink); }
+  .activity-toast .meta { font-size: 11.5px; color: var(--muted); margin-top: 3px; }
+  .activity-toast .close {
+    background: none; border: none; cursor: pointer;
+    color: var(--muted); font-size: 15px; line-height: 1;
+    padding: 2px; margin-left: auto; flex-shrink: 0;
+  }
+  .activity-toast .close:hover { color: var(--ink); }
+
+  @media (max-width: 480px) {
+    .activity-toast { left: 12px; right: 12px; max-width: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    button.cta { transition: none; }
+    .activity-toast { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="stamp">
+      <span>FOUNDER MEMO — INTERNAL BREAKDOWN</span>
+      <span id="todayDate"></span>
+    </div>
+    <h1>I replaced my entire team's workload with one AI system.</h1>
+    <p class="sub">Founder, CTO, developers, product, sales, support, finance, marketing — covered by one coordinated AI agent system. Profit was up 60% in the first month. Here's exactly what it replaced, and what it cost.</p>
+  </header>
+
+  <section>
+    <p class="kicker">The problem</p>
+    <h2>Every startup needs eight roles. Most can only afford one or two.</h2>
+    <p class="lead">Price out a founder, a CTO, a developer, a product manager, a salesperson, a support rep, a bookkeeper, and a marketer — even at junior-to-mid rates — and you're looking at <strong>$350,000 to $600,000+ a year</strong> before you've shipped a feature or closed a deal.</p>
+    <p>I was trying to be all eight people at once. It wasn't working. So I built something that could actually hold each role down — not assist with it, run it.</p>
+  </section>
+
+  <section>
+    <p class="kicker">What it replaced</p>
+    <h2>The roles, and what each one was actually costing.</h2>
+    <div class="ledger">
+      <div class="row">
+        <div class="role">Founder / CEO<span>Strategy, fundraising, key relationships</span></div>
+        <div class="cost">$40K+<small>per year, typical</small></div>
+      </div>
+      <div class="row">
+        <div class="role">CTO / Lead Developer<span>Architecture, code quality, hiring</span></div>
+        <div class="cost">$40K+<small>per year, typical</small></div>
+      </div>
+      <div class="row">
+        <div class="role">Full-Stack Developer(s)<span>Frontend, backend, DevOps</span></div>
+        <div class="cost">$35K+<small>per role, per year</small></div>
+      </div>
+      <div class="row">
+        <div class="role">Product Manager<span>Roadmap, prioritization, customer input</span></div>
+        <div class="cost">$35K+<small>per year, typical</small></div>
+      </div>
+      <div class="row">
+        <div class="role">Sales / Business Development<span>New customers, closing, relationships</span></div>
+        <div class="cost">$35K+<small>per year, typical</small></div>
+      </div>
+      <div class="row">
+        <div class="role">Customer Success / Support<span>Onboarding, tickets, feedback</span></div>
+        <div class="cost">$35K+<small>per year, typical</small></div>
+      </div>
+      <div class="row">
+        <div class="role">Finance / Operations<span>Bookkeeping, HR, compliance</span></div>
+        <div class="cost">$35K+<small>per year, typical</small></div>
+      </div>
+      <div class="row">
+        <div class="role">Marketing<span>Content, social, brand messaging</span></div>
+        <div class="cost">$35K+<small>per year, typical</small></div>
+      </div>
+    </div>
+    <p style="margin-top:20px; font-size: 15px; color: var(--muted);">Figures are typical market ranges per role — yours will vary by position, location, and experience level.</p>
+  </section>
+
+  <section>
+    <p class="kicker">What happened</p>
+    <h2>The results, quarter over quarter.</h2>
+    <div class="stats">
+      <div class="stat">
+        <div class="num">60%</div>
+        <div class="lbl">increase in revenue and profit in the first 30 days</div>
+      </div>
+      <div class="stat">
+        <div class="num">$35–40K+</div>
+        <div class="lbl">saved per role, per year, depending on position</div>
+      </div>
+      <div class="stat">
+        <div class="num">Compounding</div>
+        <div class="lbl">gains kept scaling every quarter since — not a one-time bump</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Who this is for</p>
+    <h2>If any of this sounds familiar —</h2>
+    <ul class="plain">
+      <li>Payroll is eating your runway before you've proven the model.</li>
+      <li>You're wearing five job titles and sleeping four hours a night.</li>
+      <li>Marketing goes quiet the moment you get busy with everything else.</li>
+      <li>You run more than one business or niche and can't be everywhere.</li>
+      <li>You're a freelancer or solo operator doing the work of a full team.</li>
+    </ul>
+    <p>This applies whether you're a solo founder, a small company, a corporation trimming bloated departments, or a freelancer who <em>is</em> the company. The size changes. The math doesn't.</p>
+  </section>
+
+  <section>
+    <div class="signup" id="signupCard">
+      <p class="kicker">Get the full breakdown</p>
+      <h2>See exactly how the system is structured.</h2>
+      <p class="note">Leave your email and I'll send you the full breakdown of how each role was replaced — what it does, what it doesn't, and how to think about applying it to your own business.</p>
+
+      <form id="signupForm">
+        <input type="hidden" name="access_key" value="28932f5c-1120-4c92-b5ef-f038568922b7">
+        <input type="hidden" name="subject" value="New breakdown signup — landing page">
+        <input type="hidden" name="from_name" value="System Landing Page">
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+        <label for="nameInput">Name</label>
+        <input type="text" id="nameInput" name="name" placeholder="Your name" autocomplete="name" required>
+        <label for="emailInput">Email</label>
+        <input type="email" id="emailInput" name="email" placeholder="you@company.com" autocomplete="email" required>
+        <button type="submit" class="cta" id="submitBtn">Send me the breakdown</button>
+      </form>
+
+      <div class="status" id="statusBox"></div>
+      <p class="fineprint">No spam. Unsubscribe anytime. Your information is used only to send you this content.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="upsell" id="upsellCard">
+      <p class="hook">Want a system matched to your exact job description?</p>
+      <p class="note">We build and maintain <strong>100+ different job description templates</strong> beyond the 8 roles above. If yours isn't one of them, send us the description — or a few — and we'll scope a custom build for your business.</p>
+
+      <form id="upsellForm">
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+        <div class="addrow-wrap" id="jobDescRows">
+          <div class="addrow-item">
+            <textarea class="jobDescInput" name="jobDesc" placeholder="Paste or describe the first role you need covered…" required></textarea>
+          </div>
+        </div>
+        <button type="button" class="addAnother" id="addRowBtn">+ Add another job description</button>
+
+        <label for="upsellEmail" style="margin-top:14px;">Email</label>
+        <input type="email" id="upsellEmail" name="email" placeholder="you@company.com" autocomplete="email" required>
+
+        <div class="checkbox-row">
+          <input type="checkbox" id="contactOptIn" name="contactOptIn" required>
+          <label for="contactOptIn">I agree to be contacted about a custom build based on the description(s) above.</label>
+        </div>
+
+        <button type="submit" class="cta" id="upsellSubmitBtn" style="margin-top:14px;">Request a custom build</button>
+      </form>
+
+      <div class="status" id="upsellStatusBox"></div>
+
+      <div class="direct-contact">
+        Prefer to just send it over? Email your job description(s) directly <a href="mailto:propertiesonlinellc@outlook.com?subject=Custom%20Job%20Description%20Build">here <span class="arrow">&rarr;</span></a> — <strong style="color:var(--bronze-text);">propertiesonlinellc@outlook.com</strong>. A live representative will follow up with your inquiry.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    This page describes one founder's reported results from a self-built system. Individual results vary by business, implementation, and market.
+  </footer>
+
+</div>
+
+<div class="activity-toast" id="activityToast" role="status" aria-live="polite">
+  <div class="dot"></div>
+  <div class="body">
+    <div id="activityText"><strong>Someone</strong> just signed up.</div>
+    <div class="meta" id="activityMeta">Just now</div>
+  </div>
+  <button class="close" id="activityClose" aria-label="Dismiss">&times;</button>
+</div>
+
+<script>
+  document.getElementById('todayDate').textContent = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const form = document.getElementById('signupForm');
+  const statusBox = document.getElementById('statusBox');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function showStatus(message, kind) {
+    statusBox.textContent = message;
+    statusBox.className = 'status show ' + kind;
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const name = document.getElementById('nameInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim();
+
+    if (!name || !email) {
+      showStatus('Please fill in both fields.', 'err');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '28932f5c-1120-4c92-b5ef-f038568922b7',
+          subject: 'New breakdown signup — landing page',
+          from_name: 'System Landing Page',
+          name: name,
+          email: email,
+          source: 'landing-page'
+        })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Submission failed');
+      }
+
+      form.style.display = 'none';
+      showStatus('You\u2019re on the list, ' + name.split(' ')[0] + '. Your breakdown is ready: ', 'ok');
+      const dl = document.createElement('a');
+      dl.href = '8_Roles_Startup_Needs.pdf';
+      dl.textContent = 'download the PDF';
+      dl.setAttribute('download', '');
+      dl.style.cssText = 'color:inherit;font-weight:600;text-decoration:underline;';
+      statusBox.appendChild(dl);
+    } catch (err) {
+      showStatus('Something went wrong submitting that. Please try again.', 'err');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send me the breakdown';
+    }
+  });
+
+  // ---- Custom build upsell card ----
+  const jobDescRows = document.getElementById('jobDescRows');
+  const addRowBtn = document.getElementById('addRowBtn');
+
+  addRowBtn.addEventListener('click', function () {
+    const row = document.createElement('div');
+    row.className = 'addrow-item';
+    row.innerHTML =
+      '<textarea class="jobDescInput" name="jobDesc" placeholder="Describe another role you need covered\u2026" required></textarea>' +
+      '<button type="button" class="removeRow">Remove</button>';
+    jobDescRows.appendChild(row);
+    row.querySelector('.removeRow').addEventListener('click', function () {
+      row.remove();
+    });
+    row.querySelector('textarea').focus();
+  });
+
+  const upsellForm = document.getElementById('upsellForm');
+  const upsellStatusBox = document.getElementById('upsellStatusBox');
+  const upsellSubmitBtn = document.getElementById('upsellSubmitBtn');
+
+  function showUpsellStatus(message, kind) {
+    upsellStatusBox.textContent = message;
+    upsellStatusBox.className = 'status show ' + kind;
+  }
+
+  upsellForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const descriptions = Array.from(document.querySelectorAll('.jobDescInput'))
+      .map(function (el) { return el.value.trim(); })
+      .filter(Boolean);
+    const email = document.getElementById('upsellEmail').value.trim();
+    const optIn = document.getElementById('contactOptIn').checked;
+
+    if (descriptions.length === 0 || !email || !optIn) {
+      showUpsellStatus('Please add at least one job description, your email, and check the box to opt in.', 'err');
+      return;
+    }
+
+    upsellSubmitBtn.disabled = true;
+    upsellSubmitBtn.textContent = 'Sending…';
+
+    try {
+      const message = descriptions
+        .map(function (d, i) { return 'Job description ' + (i + 1) + ':\n' + d; })
+        .join('\n\n');
+
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '28932f5c-1120-4c92-b5ef-f038568922b7',
+          subject: 'New custom build request — landing page',
+          from_name: 'System Landing Page',
+          email: email,
+          message: message,
+          contact_opt_in: optIn,
+          source: 'landing-page-custom-build'
+        })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Submission failed');
+      }
+
+      upsellForm.style.display = 'none';
+      showUpsellStatus('Got it. We\u2019ll follow up at ' + email + ' about your custom build.', 'ok');
+    } catch (err) {
+      showUpsellStatus('Something went wrong submitting that. Please try again, or email us directly below.', 'err');
+      upsellSubmitBtn.disabled = false;
+      upsellSubmitBtn.textContent = 'Request a custom build';
+    }
+  });
+</script>
+
+<script>
+  // ---- Mock recent-activity toast ----
+  // In-memory only: no storage needed. Resets naturally on reload,
+  // and each item is shown at most once per page session.
+  (function () {
+    var pool = [
+      { text: '<strong>A founder in logistics</strong> just signed up for the breakdown.', meta: 'Just now' },
+      { text: '<strong>A small agency owner</strong> requested the full breakdown.', meta: '2 minutes ago' },
+      { text: '<strong>A solo consultant</strong> joined the list from this page.', meta: 'Just now' },
+      { text: '<strong>A SaaS founder</strong> started the Growth tier conversation.', meta: '5 minutes ago' },
+      { text: '<strong>A freelance operator</strong> downloaded the full breakdown.', meta: 'Just now' },
+      { text: '<strong>A multi-business owner</strong> asked about a custom build.', meta: '3 minutes ago' },
+      { text: '<strong>An e-commerce founder</strong> signed up for the breakdown.', meta: 'Just now' },
+      { text: '<strong>A retail operator</strong> requested a custom job description build.', meta: '4 minutes ago' },
+      { text: '<strong>A marketing agency owner</strong> joined the list from this page.', meta: 'Just now' },
+      { text: '<strong>A healthcare startup founder</strong> requested the full breakdown.', meta: '6 minutes ago' },
+      { text: '<strong>A fintech operator</strong> started the Scale tier conversation.', meta: '2 minutes ago' },
+      { text: '<strong>A real estate investor</strong> signed up for the breakdown.', meta: 'Just now' },
+      { text: '<strong>A construction business owner</strong> requested a custom job description build.', meta: '7 minutes ago' },
+      { text: '<strong>A two-person startup team</strong> downloaded the full breakdown.', meta: 'Just now' },
+      { text: '<strong>A hospitality operator</strong> joined the list from this page.', meta: '3 minutes ago' },
+      { text: '<strong>A bootstrapped founder</strong> started the Starter tier conversation.', meta: 'Just now' },
+      { text: '<strong>A legal services owner</strong> requested the full breakdown.', meta: '5 minutes ago' },
+      { text: '<strong>A product studio founder</strong> asked about a custom build.', meta: 'Just now' },
+      { text: '<strong>A wellness brand owner</strong> signed up for the breakdown.', meta: '4 minutes ago' },
+      { text: '<strong>A manufacturing operator</strong> joined the list from this page.', meta: 'Just now' },
+      { text: '<strong>A creative agency founder</strong> requested a custom job description build.', meta: '8 minutes ago' },
+      { text: '<strong>A subscription box founder</strong> downloaded the full breakdown.', meta: 'Just now' },
+      { text: '<strong>A consulting firm owner</strong> started the Growth tier conversation.', meta: '2 minutes ago' },
+      { text: '<strong>A nonprofit director</strong> signed up for the breakdown.', meta: 'Just now' },
+      { text: '<strong>An IT services founder</strong> requested the full breakdown.', meta: '6 minutes ago' },
+      { text: '<strong>A food and beverage owner</strong> joined the list from this page.', meta: 'Just now' },
+      { text: '<strong>A professional services firm</strong> asked about a custom build.', meta: '3 minutes ago' },
+      { text: '<strong>A dev shop founder</strong> started the Scale tier conversation.', meta: 'Just now' },
+      { text: '<strong>A coaching business owner</strong> downloaded the full breakdown.', meta: '5 minutes ago' },
+      { text: '<strong>A franchise operator</strong> requested a custom job description build.', meta: 'Just now' },
+      { text: '<strong>A boutique firm owner</strong> signed up for the breakdown.', meta: '7 minutes ago' },
+      { text: '<strong>A travel and events founder</strong> joined the list from this page.', meta: 'Just now' },
+      { text: '<strong>A media production owner</strong> started the Starter tier conversation.', meta: '4 minutes ago' },
+      { text: '<strong>A beauty brand founder</strong> requested the full breakdown.', meta: 'Just now' },
+      { text: '<strong>A supply chain operator</strong> asked about a custom build.', meta: '6 minutes ago' },
+      { text: '<strong>A recruiting firm owner</strong> downloaded the full breakdown.', meta: 'Just now' },
+      { text: '<strong>A pet care business owner</strong> signed up for the breakdown.', meta: '2 minutes ago' },
+      { text: '<strong>A design studio founder</strong> requested a custom job description build.', meta: 'Just now' }
+    ];
+
+    // Shuffle so the order differs each session, then shift() to
+    // guarantee no repeats within this same page load.
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+    }
+
+    var toast = document.getElementById('activityToast');
+    var textEl = document.getElementById('activityText');
+    var metaEl = document.getElementById('activityMeta');
+    var closeBtn = document.getElementById('activityClose');
+    var hideTimer = null;
+    var intervalId = null;
+
+    function showNext() {
+      if (pool.length === 0) {
+        if (intervalId) clearInterval(intervalId);
+        return;
+      }
+      var item = pool.shift();
+      textEl.innerHTML = item.text;
+      metaEl.textContent = item.meta;
+      toast.classList.add('show');
+
+      if (hideTimer) clearTimeout(hideTimer);
+      hideTimer = setTimeout(function () {
+        toast.classList.remove('show');
+      }, 7000);
+
+      if (pool.length === 0 && intervalId) {
+        clearInterval(intervalId);
+      }
+    }
+
+    closeBtn.addEventListener('click', function () {
+      toast.classList.remove('show');
+      if (hideTimer) clearTimeout(hideTimer);
+    });
+
+    // First one shortly after page load, then every 40 seconds.
+    setTimeout(showNext, 2500);
+    intervalId = setInterval(showNext, 40000);
+  })();
+</script>
+</body>
+</html>

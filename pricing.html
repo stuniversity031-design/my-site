@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pricing — The System That Replaced My Team</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #17160F;
+    --paper: #F4EEE1;
+    --paper-raised: #EAE2CF;
+    --brass: #AD7A2C;
+    --brass-dark: #7C581F;
+    --bronze-text: #322C1E;
+    --muted: #7C7560;
+    --rule: #C9BC9C;
+    --good: #4B5A3C;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --ink: #EDE6D6;
+      --paper: #15140F;
+      --paper-raised: #1E1C14;
+      --brass: #D6A24C;
+      --brass-dark: #E6B868;
+      --bronze-text: #EDE6D6;
+      --muted: #9C9480;
+      --rule: #3A3627;
+      --good: #8CA072;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --ink: #EDE6D6;
+    --paper: #15140F;
+    --paper-raised: #1E1C14;
+    --brass: #D6A24C;
+    --brass-dark: #E6B868;
+    --bronze-text: #EDE6D6;
+    --muted: #9C9480;
+    --rule: #3A3627;
+    --good: #8CA072;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--bronze-text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+  .wrap-narrow { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+  header { padding: 56px 0 28px; border-bottom: 1px solid var(--rule); }
+  .stamp {
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-size: 12.5px; letter-spacing: 0.02em; color: var(--muted);
+    margin-bottom: 36px; flex-wrap: wrap; gap: 8px;
+  }
+  h1 {
+    font-family: 'Source Serif 4', Georgia, serif; font-weight: 600;
+    font-size: clamp(32px, 5vw, 48px); line-height: 1.1;
+    letter-spacing: -0.01em; margin: 0 0 16px; color: var(--ink);
+  }
+  .sub { font-size: 18px; line-height: 1.55; color: var(--muted); max-width: 62ch; margin: 0; }
+
+  section { padding: 44px 0; border-bottom: 1px solid var(--rule); }
+  section:last-of-type { border-bottom: none; }
+
+  p { font-size: 17px; line-height: 1.65; margin: 0 0 16px; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  .kicker {
+    font-family: 'Source Serif 4', Georgia, serif; font-style: italic; font-weight: 500;
+    font-size: 15px; color: var(--brass-dark); margin: 0 0 8px;
+  }
+  h2 {
+    font-family: 'Source Serif 4', Georgia, serif; font-weight: 600;
+    font-size: clamp(24px, 3.4vw, 30px); line-height: 1.2;
+    color: var(--ink); margin: 0 0 18px;
+  }
+
+  /* reframe strip */
+  .reframe {
+    display: flex; gap: 28px; flex-wrap: wrap; align-items: baseline;
+    padding: 28px 0;
+  }
+  .reframe .num {
+    font-family: 'Source Serif 4', Georgia, serif; font-weight: 700;
+    font-size: clamp(28px, 4vw, 36px); color: var(--ink); line-height: 1;
+  }
+  .reframe .lbl { font-size: 14px; color: var(--muted); max-width: 22ch; line-height: 1.4; }
+  .reframe .arrow { font-family: 'Source Serif 4', Georgia, serif; font-style: italic; font-size: 22px; color: var(--brass); align-self: center; }
+
+  /* tiers */
+  .tiers {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    border: 1px solid var(--rule); border-radius: 2px; overflow: hidden;
+    margin-top: 8px;
+  }
+  .tier {
+    padding: 30px 24px; border-right: 1px solid var(--rule);
+    display: flex; flex-direction: column;
+  }
+  .tier:last-child { border-right: none; }
+  .tier.featured { background: var(--paper-raised); position: relative; }
+  .tier .badge {
+    font-family: 'Source Serif 4', Georgia, serif; font-style: italic; font-weight: 500;
+    font-size: 13px; color: var(--brass-dark); margin-bottom: 10px;
+  }
+  .tier .name { font-family: 'Source Serif 4', Georgia, serif; font-weight: 600; font-size: 22px; color: var(--ink); margin-bottom: 6px; }
+  .tier .who { font-size: 13.5px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; min-height: 40px; }
+  .tier .price { font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 34px; color: var(--ink); line-height: 1; margin-bottom: 2px; }
+  .tier .price-note { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+  .tier ul { list-style: none; margin: 0 0 24px; padding: 0; flex-grow: 1; }
+  .tier ul li {
+    position: relative; padding-left: 20px; margin-bottom: 11px;
+    font-size: 14.5px; line-height: 1.5; color: var(--bronze-text);
+  }
+  .tier ul li::before { content: "—"; position: absolute; left: 0; color: var(--brass); }
+  .tier .pick {
+    display: block; text-align: center; text-decoration: none;
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 14.5px;
+    padding: 12px 16px; border-radius: 3px; border: 1px solid var(--brass);
+    color: var(--brass-dark); background: transparent; cursor: pointer;
+  }
+  .tier.featured .pick { background: var(--brass); color: #1B1304; border-color: var(--brass); }
+  .tier .pick:hover { opacity: 0.85; }
+
+  @media (max-width: 760px) {
+    .tiers { grid-template-columns: 1fr; }
+    .tier { border-right: none; border-bottom: 1px solid var(--rule); }
+    .tier:last-child { border-bottom: none; }
+  }
+
+  /* guarantee */
+  .guarantee {
+    display: flex; gap: 24px; align-items: flex-start;
+    background: var(--paper-raised); border: 1px solid var(--rule);
+    border-radius: 2px; padding: 30px 28px;
+  }
+  .guarantee .mark {
+    font-family: 'Source Serif 4', Georgia, serif; font-weight: 700; font-size: 30px;
+    color: var(--brass); line-height: 1; flex-shrink: 0; padding-top: 2px;
+  }
+  .guarantee h2 { margin-bottom: 10px; font-size: 22px; }
+  .guarantee p { font-size: 15.5px; margin-bottom: 0; }
+
+  /* faq */
+  .faqrow { padding: 18px 0; border-bottom: 1px solid var(--rule); }
+  .faqrow:last-child { border-bottom: none; }
+  .faqrow .q { font-weight: 600; color: var(--ink); font-size: 16px; margin-bottom: 6px; }
+  .faqrow .a { font-size: 15px; color: var(--bronze-text); line-height: 1.6; margin: 0; }
+
+  /* signup */
+  .signup {
+    background: var(--paper-raised); border: 1px solid var(--rule);
+    border-radius: 2px; padding: 36px 28px; margin: 8px 0;
+  }
+  .signup h2 { margin-bottom: 8px; }
+  .signup p.note { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+  form { display: flex; flex-direction: column; gap: 12px; max-width: 420px; }
+  label { font-size: 13px; color: var(--muted); font-weight: 500; }
+  input[type="email"], input[type="text"], select {
+    font-family: 'Inter', sans-serif; font-size: 16px; padding: 13px 14px;
+    border: 1px solid var(--rule); border-radius: 3px;
+    background: var(--paper); color: var(--ink); outline: none;
+  }
+  input:focus, select:focus {
+    border-color: var(--brass); box-shadow: 0 0 0 3px rgba(173, 122, 44, 0.18);
+  }
+  button.cta {
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 16px;
+    padding: 14px 22px; background: var(--brass); color: #1B1304;
+    border: none; border-radius: 3px; cursor: pointer; margin-top: 6px;
+    transition: background 0.15s ease, transform 0.1s ease;
+  }
+  button.cta:hover { background: var(--brass-dark); }
+  button.cta:active { transform: translateY(1px); }
+  button.cta:focus-visible { outline: 3px solid var(--brass-dark); outline-offset: 2px; }
+  button.cta:disabled { opacity: 0.6; cursor: not-allowed; }
+  .fineprint { font-size: 12.5px; color: var(--muted); margin-top: 14px; }
+  .status { display: none; margin-top: 16px; padding: 12px 14px; border-radius: 3px; font-size: 14.5px; line-height: 1.5; }
+  .status.show { display: block; }
+  .status.ok { background: rgba(75, 90, 60, 0.12); color: var(--good); border: 1px solid rgba(75, 90, 60, 0.3); }
+  .status.err { background: rgba(176, 60, 40, 0.1); color: #B03C28; border: 1px solid rgba(176, 60, 40, 0.3); }
+
+  footer { padding: 36px 0 60px; font-size: 13px; color: var(--muted); }
+
+  @media (prefers-reduced-motion: reduce) { button.cta { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="stamp">
+      <span>FOUNDER MEMO — PRICING &amp; OFFER</span>
+      <span id="todayDate"></span>
+    </div>
+    <h1>Pick the tier that matches what you're replacing.</h1>
+    <p class="sub">Every tier runs the same underlying system. The difference is how many roles it covers on day one, and how much hands-on setup you get.</p>
+  </header>
+
+  <section>
+    <div class="reframe">
+      <div>
+        <div class="num">$117K–$970K+</div>
+        <div class="lbl">typical yearly cost of hiring all eight roles</div>
+      </div>
+      <div class="arrow">vs.</div>
+      <div>
+        <div class="num" id="comparePrice">a fraction of one salary</div>
+        <div class="lbl">to run the system that covers them</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Choose your tier</p>
+    <h2>Three ways to run it.</h2>
+
+    <div class="tiers">
+      <div class="tier" data-tier="Starter">
+        <div class="name">Starter</div>
+        <div class="who">For solo founders and freelancers testing the waters with one or two roles.</div>
+        <div class="price">$497<span style="font-size:16px; font-weight:400;">/mo</span></div>
+        <div class="price-note">Billed monthly. Cancel anytime.</div>
+        <ul>
+          <li>2 roles of your choice (e.g. Marketing + Customer Success)</li>
+          <li>Core setup and configuration</li>
+          <li>Standard onboarding walkthrough</li>
+          <li>Email support</li>
+          <li>Monthly performance check-in</li>
+        </ul>
+        <button class="pick" type="button">Start with Starter</button>
+      </div>
+
+      <div class="tier featured" data-tier="Growth">
+        <div class="badge">Most founders choose this</div>
+        <div class="name">Growth</div>
+        <div class="who">For startups and small teams who want the full system running now.</div>
+        <div class="price">$1,497<span style="font-size:16px; font-weight:400;">/mo</span></div>
+        <div class="price-note">Billed monthly. Cancel anytime.</div>
+        <ul>
+          <li>All 8 roles covered end to end</li>
+          <li>Full setup across every function</li>
+          <li>Priority onboarding with a setup call</li>
+          <li>Priority email + chat support</li>
+          <li>Quarterly system tuning as you scale</li>
+        </ul>
+        <button class="pick" type="button">Start with Growth</button>
+      </div>
+
+      <div class="tier" data-tier="Scale">
+        <div class="name">Scale</div>
+        <div class="who">For agencies, corporations, or owners running more than one business.</div>
+        <div class="price">$2,997<span style="font-size:16px; font-weight:400;">/mo</span></div>
+        <div class="price-note">Billed monthly. Cancel anytime.</div>
+        <ul>
+          <li>All 8 roles across multiple businesses or niches</li>
+          <li>White-glove setup and migration</li>
+          <li>Dedicated onboarding specialist</li>
+          <li>Priority support with faster response times</li>
+          <li>Monthly tuning and strategy review</li>
+        </ul>
+        <button class="pick" type="button">Start with Scale</button>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="guarantee">
+      <div class="mark">—</div>
+      <div>
+        <h2>The 30-day guarantee.</h2>
+        <p>Try the system for a full 30 days. If it isn't clearly doing the work of the roles you signed up for, tell us and we'll refund what you paid for that period — no retention pitch, no runaround. The risk is on us, not you.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Before you ask</p>
+    <h2>A few common questions.</h2>
+    <div class="faqrow">
+      <div class="q">Can I switch tiers later?</div>
+      <p class="a">Yes. Move up when you need more roles covered, or down if you're trimming back. Changes apply at your next billing cycle.</p>
+    </div>
+    <div class="faqrow">
+      <div class="q">Do I still need any human involvement?</div>
+      <p class="a">Yes, by design. The system runs the day-to-day work of each role; you still make the calls that need a human — final approvals, big relationship moments, anything with real judgment attached.</p>
+    </div>
+    <div class="faqrow">
+      <div class="q">What happens after I sign up?</div>
+      <p class="a">You'll get an onboarding call to map your business to the roles you picked, then setup begins. Starter and Growth are typically running within a week; Scale depends on how many businesses you're configuring.</p>
+    </div>
+    <div class="faqrow">
+      <div class="q">Is this the same for every business?</div>
+      <p class="a">No. The roles are the same shape everywhere, but the system is configured against your product, your customers, and your market — not a generic template.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="signup" id="signupCard">
+      <p class="kicker">Ready when you are</p>
+      <h2>Claim your spot.</h2>
+      <p class="note">Tell us your name, email, and which tier you're leaning toward. We'll follow up to get you onboarded.</p>
+
+      <form id="signupForm">
+        <input type="hidden" name="access_key" value="28932f5c-1120-4c92-b5ef-f038568922b7">
+        <input type="hidden" name="subject" value="New lead — pricing page">
+        <input type="hidden" name="from_name" value="System Pricing Page">
+        <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
+        <label for="nameInput">Name</label>
+        <input type="text" id="nameInput" name="name" placeholder="Your name" autocomplete="name" required>
+        <label for="emailInput">Email</label>
+        <input type="email" id="emailInput" name="email" placeholder="you@company.com" autocomplete="email" required>
+        <label for="tierSelect">Tier</label>
+        <select id="tierSelect" name="tier" required>
+          <option value="" disabled selected>Choose a tier</option>
+          <option value="Starter">Starter — $497/mo</option>
+          <option value="Growth">Growth — $1,497/mo</option>
+          <option value="Scale">Scale — $2,997/mo</option>
+        </select>
+        <button type="submit" class="cta" id="submitBtn">Claim my spot</button>
+      </form>
+
+      <div class="status" id="statusBox"></div>
+      <p class="fineprint">No charge today. We'll reach out to confirm details before anything is billed.</p>
+    </div>
+  </section>
+
+  <footer>
+    Pricing reflects a self-built system and may be adjusted. The 30-day guarantee applies to amounts paid for the current billing period. Individual results vary by business, implementation, and market.
+  </footer>
+</div>
+
+<script>
+  document.getElementById('todayDate').textContent = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+
+  // Clicking a tier's pick button scrolls to the form and preselects that tier
+  document.querySelectorAll('.tier .pick').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      const tierName = btn.closest('.tier').dataset.tier;
+      const select = document.getElementById('tierSelect');
+      select.value = tierName;
+      document.getElementById('signupCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.getElementById('nameInput').focus({ preventScroll: true });
+    });
+  });
+
+  const form = document.getElementById('signupForm');
+  const statusBox = document.getElementById('statusBox');
+  const submitBtn = document.getElementById('submitBtn');
+
+  function showStatus(message, kind) {
+    statusBox.textContent = message;
+    statusBox.className = 'status show ' + kind;
+  }
+
+  form.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const name = document.getElementById('nameInput').value.trim();
+    const email = document.getElementById('emailInput').value.trim();
+    const tier = document.getElementById('tierSelect').value;
+
+    if (!name || !email || !tier) {
+      showStatus('Please fill in your name, email, and tier.', 'err');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending…';
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '28932f5c-1120-4c92-b5ef-f038568922b7',
+          subject: 'New lead — pricing page',
+          from_name: 'System Pricing Page',
+          name: name,
+          email: email,
+          tier: tier,
+          source: 'pricing-page'
+        })
+      });
+      const result = await res.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Submission failed');
+      }
+
+      form.style.display = 'none';
+      showStatus('You\u2019re on the list, ' + name.split(' ')[0] + '. We\u2019ll be in touch at ' + email + ' about ' + tier + '.', 'ok');
+    } catch (err) {
+      showStatus('Something went wrong submitting that. Please try again.', 'err');
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Claim my spot';
+    }
+  });
+</script>
+</body>
+</html>
