@@ -222,6 +222,69 @@
   .status.ok { background: rgba(75, 90, 60, 0.12); color: var(--good); border: 1px solid rgba(75, 90, 60, 0.3); }
   .status.err { background: rgba(176, 60, 40, 0.1); color: #B03C28; border: 1px solid rgba(176, 60, 40, 0.3); }
 
+  /* ---- pricing CTA with live thumbnail ---- */
+  .stamp-right { display: flex; gap: 18px; align-items: baseline; }
+  .stamp-right a {
+    color: var(--brass-dark);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px solid var(--brass);
+  }
+  .stamp-right a:hover { color: var(--ink); border-color: var(--ink); }
+
+  .pricing-cta {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: 28px;
+    align-items: center;
+    background: var(--paper-raised);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 22px;
+  }
+  .pricing-cta:hover { border-color: var(--brass); }
+  .pricing-cta .thumb {
+    position: relative;
+    aspect-ratio: 1000 / 640;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    background: var(--paper);
+  }
+  .pricing-cta .thumb iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1000px;
+    height: 640px;
+    border: 0;
+    transform-origin: 0 0;
+    transform: scale(0.34);
+    pointer-events: none;
+  }
+  .pricing-cta .copy .kicker { margin-bottom: 6px; }
+  .pricing-cta .copy h2 { font-size: 24px; margin-bottom: 10px; }
+  .pricing-cta .copy p.desc { font-size: 15.5px; line-height: 1.6; color: var(--muted); margin-bottom: 20px; }
+  .pricing-cta .btn {
+    display: inline-block;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 15.5px;
+    padding: 13px 24px;
+    background: var(--brass);
+    color: #1B1304;
+    border-radius: 3px;
+    text-decoration: none;
+  }
+  /* stretch the link over the whole card so the thumbnail is clickable too */
+  .pricing-cta .btn::after { content: ""; position: absolute; inset: 0; }
+  .pricing-cta:hover .btn { background: var(--brass-dark); }
+  .pricing-cta .btn:focus-visible { outline: 3px solid var(--brass-dark); outline-offset: 2px; }
+
+  @media (max-width: 640px) {
+    .pricing-cta { grid-template-columns: 1fr; gap: 18px; padding: 18px; }
+  }
+
   /* ---- custom build upsell ---- */
   .upsell {
     background: var(--paper-raised);
@@ -394,7 +457,7 @@
   <header>
     <div class="stamp">
       <span>FOUNDER MEMO — INTERNAL BREAKDOWN</span>
-      <span id="todayDate"></span>
+      <span class="stamp-right"><a href="pricing.html">Pricing</a><span id="todayDate"></span></span>
     </div>
     <h1>I replaced my entire team's workload with one AI system.</h1>
     <p class="sub">Founder, CTO, developers, product, sales, support, finance, marketing — covered by one coordinated AI agent system. Profit was up 60% in the first month. Here's exactly what it replaced, and what it cost.</p>
@@ -462,6 +525,20 @@
       <div class="stat">
         <div class="num">Compounding</div>
         <div class="lbl">gains kept scaling every quarter since — not a one-time bump</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="pricing-cta">
+      <div class="thumb" aria-hidden="true">
+        <iframe src="pricing.html#tiers" title="Preview of the pricing page" loading="lazy" tabindex="-1" scrolling="no"></iframe>
+      </div>
+      <div class="copy">
+        <p class="kicker">What it costs</p>
+        <h2>See what the whole team costs to run.</h2>
+        <p class="desc">Three tiers, from two roles up to all eight across multiple businesses. Every plan comes with a 30-day guarantee.</p>
+        <a class="btn" href="pricing.html">See pricing</a>
       </div>
     </div>
   </section>
@@ -535,6 +612,20 @@
     </div>
   </section>
 
+  <section>
+    <div class="pricing-cta">
+      <div class="thumb" aria-hidden="true">
+        <iframe src="pricing.html#tiers" title="Preview of the pricing page" loading="lazy" tabindex="-1" scrolling="no"></iframe>
+      </div>
+      <div class="copy">
+        <p class="kicker">Ready to choose?</p>
+        <h2>Pick a tier and get started.</h2>
+        <p class="desc">Compare Starter, Growth, and Scale side by side, then claim your spot. No charge today.</p>
+        <a class="btn" href="pricing.html">Compare tiers</a>
+      </div>
+    </div>
+  </section>
+
   <footer>
     This page describes one founder's reported results from a self-built system. Individual results vary by business, implementation, and market.
   </footer>
@@ -601,6 +692,13 @@
       dl.setAttribute('download', '');
       dl.style.cssText = 'color:inherit;font-weight:600;text-decoration:underline;';
       statusBox.appendChild(dl);
+      statusBox.appendChild(document.createTextNode('. Ready to choose a plan? '));
+      const pl = document.createElement('a');
+      pl.href = 'pricing.html';
+      pl.textContent = 'See pricing';
+      pl.style.cssText = dl.style.cssText;
+      statusBox.appendChild(pl);
+      statusBox.appendChild(document.createTextNode('.'));
     } catch (err) {
       showStatus('Something went wrong submitting that. Please try again.', 'err');
       submitBtn.disabled = false;
@@ -771,6 +869,26 @@
     // First one shortly after page load, then every 40 seconds.
     setTimeout(showNext, 2500);
     intervalId = setInterval(showNext, 40000);
+  })();
+</script>
+<script>
+  // Scale each live pricing preview (rendered at 1000px wide) down to fit its thumbnail frame.
+  (function () {
+    var thumbs = document.querySelectorAll('.pricing-cta .thumb');
+    function fit() {
+      thumbs.forEach(function (thumb) {
+        var frame = thumb.querySelector('iframe');
+        if (frame && thumb.clientWidth) {
+          frame.style.transform = 'scale(' + (thumb.clientWidth / 1000) + ')';
+        }
+      });
+    }
+    fit();
+    window.addEventListener('resize', fit);
+    window.addEventListener('load', fit);
+    if (window.ResizeObserver) {
+      thumbs.forEach(function (t) { new ResizeObserver(fit).observe(t); });
+    }
   })();
 </script>
 </body>
